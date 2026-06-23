@@ -1,7 +1,30 @@
-﻿.DS_Store
+﻿# OS
+.DS_Store
 Thumbs.db
+desktop.ini
+
+# Editors
 *.swp
 *.swo
 *~
 .idea/
 .vscode/
+*.sublime-*
+.project
+.settings/
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+env/
+venv/
+.venv/
+
+# Logs
+*.log

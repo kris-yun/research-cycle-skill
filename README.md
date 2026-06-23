@@ -1,89 +1,90 @@
 ﻿# Research Cycle Skill for Codex
 
-通用科学研究闭环工作流 skill，适用于 [Codex](https://github.com/OpenAI/codex)。
+A closed-loop research workflow skill for [Codex](https://github.com/OpenAI/codex) — from literature survey to paper publication, with **multi-agent adversarial debate** for gap discovery and **Semantic Scholar API** for literature validation.
 
-从文献调研到论文发表的完整研究闭环，集成了 **多Agent对抗辩论** 和 **Semantic Scholar API 文献验证**。
+## Highlights
 
-## 核心特性
+- **7-Phase Closed Loop**: Literature Survey → Innovation Design → Baseline Reproduction → Implementation → Experiment → Analysis & Iteration → Paper Writing
+- **Multi-Agent Adversarial Gap Discovery**: Proposer / Reviewer / Evidence roles engage in structured debate to avoid self-deception
+- **Semantic Scholar API Validation**: Quantify research gap size instead of relying on intuition
+- **Two Selection Strategies**: *Borrow-and-Swap* (take top-venue framework, swap domain) and *Core-Upgrade* (replace a single core component in a classical model)
+- **Structured Output**: Standardized templates and decision records for every phase
 
-- **7阶段完整闭环**：文献调研 → 创新点设计 → Baseline复现 → 实现 → 实验 → 分析迭代 → 论文撰写
-- **多Agent对抗Gap发现**：Proposer/Reviewer/Evidence 三角色对抗辩论，避免自欺欺人
-- **Semantic Scholar API 验证**：量化判断研究Gap大小，不靠直觉
-- **两种选题策略**：借船出海（顶会框架换场景）和 换芯升级（经典模型换核心模块）
-- **结构化输出**：每个阶段有标准化模板和决策记录
+## When to Use
 
-## 适用场景
+- Graduate student topic selection and proposal
+- Finding publishable research gaps
+- Designing theoretically grounded innovations
+- Standardized experiment validation workflows
+- Paper writing assistance
 
-- 研究生选题和开题
-- 找有发表价值的研究gap
-- 设计有理论支撑的创新点
-- 规范化实验验证流程
-- 论文撰写辅助
+## Installation
 
-## 安装
+### Option 1: Manual Install
 
-### 方式 1：手动安装
-
-将 `.codex/skills/research-cycle/` 目录复制到你的 Codex skills 目录：
+Copy the `.codex/skills/research-cycle/` directory to your Codex skills path:
 
 ```bash
-# 全局安装（推荐）
+# Global install (recommended)
 cp -r .codex/skills/research-cycle/ ~/.codex/skills/research-cycle/
 
-# 或项目级安装
+# Or project-level install
 mkdir -p your-project/.codex/skills/
 cp -r .codex/skills/research-cycle/ your-project/.codex/skills/research-cycle/
 ```
 
-### 方式 2：Clone 仓库
+### Option 2: Clone Repository
 
 ```bash
 git clone https://github.com/kris-yun/research-cycle-skill.git
 cp -r research-cycle-skill/.codex/skills/research-cycle/ ~/.codex/skills/
 ```
 
-## 使用方法
+## Usage
 
-在 Codex 中直接使用触发词即可自动激活：
-
-```
-研究循环、research cycle、找选题、文献调研、research brainstorming、
-科学头脑风暴、研究gap、找研究gap、对抗性辩论、创新点设计、实验设计、
-跑实验、论文撰写、做研究、科研流程、帮我找创新点、怎么发论文、
-scientific gap finder
-```
-
-### 示例对话
+Use any of the trigger phrases in Codex to activate this skill automatically:
 
 ```
-> 帮我做研究循环，方向是无人机气体溯源，目标IEEE Sensors Journal
-
-> 启动多Agent对抗辩论，帮我找[领域]的研究gap
-
-> 用Semantic Scholar验证[关键词]方向有多少论文，判断Gap大小
+research cycle, research workflow, literature survey, research brainstorming,
+scientific brainstorming, research gap, find research gap, adversarial debate,
+innovation design, experiment design, run experiments, paper writing,
+do research, research process, scientific gap finder, multi-agent debate,
+gap analysis, literature review, academic research
 ```
 
-## 工作流程
+### Example Prompts
+
+> Run a research cycle on UAV gas source localization, targeting IEEE Sensors Journal
+
+> Launch multi-agent adversarial debate to find research gaps in [domain]
+
+> Use Semantic Scholar to validate how many papers exist in the [keyword] direction
+
+## Workflow
 
 ```
-Phase 1: 文献调研 & 多Agent对抗Gap发现
-  ├── 1a: 文献搜索 + Semantic Scholar验证
-  ├── 1b: Proposer/Reviewer/Evidence 对抗辩论
-  └── 1c: GO/REVISE/KILL 决策
-Phase 2: 创新点设计（理论支撑 + 可解释性）
-Phase 3: Baseline复现（官方代码 + 官方参数）
-Phase 4: 创新点实现（最小修改 + 模块化开关）
-Phase 5: 实验验证（多次运行 + 消融 + 跨数据集）
-Phase 6: 结果分析 → 回到Phase 2迭代
-Phase 7: 论文撰写
+Phase 1: Literature Survey & Multi-Agent Adversarial Gap Discovery
+  ├── 1a: Literature Search + Semantic Scholar Validation
+  ├── 1b: Proposer / Reviewer / Evidence Adversarial Debate
+  └── 1c: GO / REVISE / KILL Decision
+Phase 2: Innovation Design (theoretically grounded + explainable)
+Phase 3: Baseline Reproduction (official code + official parameters)
+Phase 4: Innovation Implementation (minimal changes + modular toggle)
+Phase 5: Experimental Validation (multiple runs + ablation + cross-dataset)
+Phase 6: Analysis & Iteration → back to Phase 2
+Phase 7: Paper Writing
 ```
 
-## 环境变量
+## Environment Variables
 
-| 变量 | 说明 | 必需 |
-|------|------|------|
-| `S2_API_KEY` | Semantic Scholar API Key，用于文献验证 | 可选（无Key也可用，有Key配额更高） |
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `S2_API_KEY` | Semantic Scholar API key for literature validation | Optional (works without key, higher quota with key) |
 
-## 许可证
+## Contributing
 
-MIT License
+Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+## License
+
+[MIT License](LICENSE)

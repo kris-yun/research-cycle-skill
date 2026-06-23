@@ -1,451 +1,459 @@
 ﻿---
 name: research-cycle
 description: |
-  通用科学研究闭环工作流：从文献调研→多Agent对抗Gap发现→创新点设计→实验验证→论文撰写。
-  集成了多Agent对抗辩论机制和Semantic Scholar API文献验证，适用于任何需要
-  "找创新点+做实验+发论文"的研究任务。
-  触发词：研究循环、research cycle、找选题、文献调研、research brainstorming、
-  科学头脑风暴、研究gap、找研究gap、对抗性辩论、创新点设计、实验设计、跑实验、
-  论文撰写、做研究、科研流程、帮我找创新点、怎么发论文、scientific gap finder。
-  用户提供：研究方向、可用数据集、baseline方法、目标期刊/会议。
+  A closed-loop research workflow: Literature Survey → Multi-Agent Adversarial Gap Discovery → Innovation Design → Experiment Validation → Paper Writing.
+  Integrates multi-agent adversarial debate and Semantic Scholar API literature validation.
+  Works for any research domain requiring "find innovation + run experiments + publish papers".
+  Triggers: research cycle, research workflow, literature survey, research brainstorming,
+  scientific brainstorming, research gap, find research gap, adversarial debate,
+  innovation design, experiment design, run experiments, paper writing,
+  do research, research process, help me find innovations, scientific gap finder,
+  multi-agent debate, gap analysis, literature review, academic research.
+  User provides: research direction, available datasets, baseline methods, target journal/conference.
 ---
 
 # Research Cycle Skill
 
-## 适用场景
+## Overview
 
-用户有一个明确的研究方向，需要：
-- 找到有发表价值的研究gap
-- 设计有理论支撑的创新点
-- 用实验验证创新点的有效性
-- 最终发表论文
+A general-purpose research cycle skill for [Codex](https://github.com/OpenAI/codex). Covers the entire pipeline from literature survey to paper publication, with built-in **multi-agent adversarial debate** for gap discovery and **Semantic Scholar API** for literature validation.
 
-## 输入
+## When to Use
 
-用户需提供：
-1. **研究方向**：具体要解决的问题
-2. **可用资源**：数据集、baseline代码、计算资源
-3. **目标**：期刊/会议、改进幅度要求
-4. **偏好**：跨领域来源、禁用方向等
+Use this skill when the user needs to:
+- Find publishable research gaps in a given domain
+- Design theoretically grounded innovations
+- Validate innovations through rigorous experiments
+- Write and publish academic papers
 
-## 完整研究循环
+## Required Input
+
+The user should provide:
+1. **Research direction**: The specific problem to solve
+2. **Available resources**: Datasets, baseline code, compute
+3. **Target**: Journal/conference, required improvement margin
+4. **Preferences**: Cross-domain sources, forbidden directions, etc.
+
+## Full Research Cycle
 
 ```
 ┌─────────────────────────────────────────────────────────┐
 │                  Research Cycle                          │
 ├─────────────────────────────────────────────────────────┤
 │                                                         │
-│  Phase 1: 文献调研 & 多Agent对抗Gap发现                  │
-│     ├── 1a: 文献搜索 + Semantic Scholar验证              │
-│     ├── 1b: 多Agent对抗辩论 (Proposer/Reviewer/Evidence) │
-│     └── 1c: GO/REVISE/KILL 决策                        │
+│  Phase 1: Literature Survey & Adversarial Gap Discovery  │
+│     ├── 1a: Literature Search + Semantic Scholar Verify  │
+│     ├── 1b: Multi-Agent Adversarial Debate               │
+│     │      (Proposer / Reviewer / Evidence)              │
+│     └── 1c: GO / REVISE / KILL Decision                 │
 │     ↓                                                   │
-│  Phase 2: 创新点设计                                     │
+│  Phase 2: Innovation Design                              │
 │     ↓                                                   │
-│  Phase 3: Baseline复现                                  │
+│  Phase 3: Baseline Reproduction                          │
 │     ↓                                                   │
-│  Phase 4: 创新点实现                                     │
+│  Phase 4: Innovation Implementation                      │
 │     ↓                                                   │
-│  Phase 5: 实验验证                                       │
+│  Phase 5: Experimental Validation                        │
 │     ↓                                                   │
-│  Phase 6: 结果分析 → 回到Phase 2迭代                     │
+│  Phase 6: Analysis & Iteration → Back to Phase 2        │
 │     ↓                                                   │
-│  Phase 7: 论文撰写                                       │
+│  Phase 7: Paper Writing                                  │
 │                                                         │
 └─────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## Phase 1: 文献调研 & 多Agent对抗Gap发现
+## Phase 1: Literature Survey & Adversarial Gap Discovery
 
-### Phase 1a: 文献搜索
+### Phase 1a: Literature Search
 
-#### 目标
+#### Goal
 
-深入了解领域现状，找到3-5个可发表的研究gap。
+Gain deep understanding of the state-of-the-art and identify 3-5 publishable research gaps.
 
-#### 流程
+#### Process
 
-1. **广度搜索**：用关键词搜索近3年顶会/顶刊论文
-2. **深度阅读**：每篇论文问自己三个问题
-   - 这篇凭啥能发？（创新点分析：新问题？新思路？实验严谨？）
-   - 接着做怎么突破？（从局限性找：没测的场景、没调的参数）
-   - 方法能跨界用吗？（把A领域方法搬到B领域）
-3. **Gap总结**：每轮搜索后总结发现的gap
-4. **迭代**：至少15轮，每轮搜索→总结→找gap
+1. **Breadth search**: Search top venues from the last 3 years using relevant keywords
+2. **Deep reading**: For each paper, ask three core questions:
+   - Why was this accepted? (Innovation analysis: new problem? new approach? rigorous experiments?)
+   - How to improve it? (Find limitations: untested scenarios, untuned parameters)
+   - Can the method transfer? (Move method from domain A to domain B)
+3. **Gap summary**: After each search round, summarize discovered gaps
+4. **Iterate**: At least 15 rounds of search → summarize → find gaps
 
-#### 三个核心问题（读每篇论文都问）
+#### Three Core Questions (ask for every paper)
 
-| 问题 | 目的 | 输出 |
-|------|------|------|
-| 凭啥能发？ | 理解创新点本质 | 创新点分类：新问题/新思路/实验严谨 |
-| 怎么突破？ | 找改进空间 | 1-2个具体改进点 |
-| 能跨界吗？ | 找迁移机会 | "方法翻译官"机会 |
+| Question | Purpose | Output |
+|----------|---------|--------|
+| Why accepted? | Understand the nature of innovation | Innovation type: new problem / new approach / rigorous experiments |
+| How to improve? | Find improvement space | 1-2 concrete improvement points |
+| Can it transfer? | Find cross-domain opportunities | "Method translator" opportunities |
 
-#### Semantic Scholar API 文献验证
+#### Semantic Scholar API Literature Validation
 
-使用 Semantic Scholar API 验证候选方向的论文数量，判断真实 Gap：
+Use the Semantic Scholar API to validate the number of papers in a candidate direction and assess the true gap size:
 
 - API: `https://api.semanticscholar.org/graph/v1/paper/search`
-- 请求间隔：≥1.5秒（避免限流）
-- 设置 `S2_API_KEY` 环境变量获取更高配额
+- Request interval: ≥1.5 seconds (avoid rate limiting)
+- Set `S2_API_KEY` environment variable for higher quotas
 
-**Gap判断标准**：
-| 论文数量 | Gap等级 | 含义 |
-|----------|---------|------|
-| < 50篇 | 窄Gap | 高风险高回报，可能是新方向或没人做 |
-| 50-100篇 | 中窄Gap | 有少量基础但仍有大量空间 |
-| 100-500篇 | 中等Gap | 成熟方向，需要更精细的切入点 |
-| > 500篇 | 宽Gap | 竞争激烈，需要非常明确的差异化 |
+**Gap Size Classification**:
+
+| Paper Count | Gap Size | Meaning |
+|-------------|----------|---------|
+| < 50 | Narrow gap | High risk, high reward — possibly a new or untouched direction |
+| 50-100 | Medium-narrow gap | Some foundation but significant room |
+| 100-500 | Medium gap | Mature direction, needs a fine-grained entry point |
+| > 500 | Wide gap | Highly competitive, requires strong differentiation |
 
 ```bash
-# 文献验证示例
+# Literature validation example
 curl -H "x-api-key: ${S2_API_KEY}" \
   "https://api.semanticscholar.org/graph/v1/paper/search?query=QUERY&limit=1&fields=totalResults"
 ```
 
-### Phase 1b: 多Agent对抗辩论
+### Phase 1b: Multi-Agent Adversarial Debate
 
-#### 角色分工
+#### Role Assignment
 
-启动3个Agent并行工作：
+Launch 3 agents in parallel:
 
-1. **Proposer（提案者）**：撰写研究提案
-   - 产出：3个创新模块 + 完整实验设计
-   - 每个模块需有理论动机、实现方案、预期效果
+1. **Proposer**: Drafts the research proposal
+   - Output: 3 innovation modules + complete experiment design
+   - Each module must have theoretical motivation, implementation plan, expected effect
 
-2. **Reviewer（审稿人）**：准备攻击清单
-   - 产出：10条 FATAL 级攻击 + 23条 MAJOR 级攻击
-   - 攻击维度：理论漏洞、实验设计缺陷、创新性不足、可复现性
+2. **Reviewer**: Prepares the attack checklist
+   - Output: 10 FATAL-level attacks + 23 MAJOR-level attacks
+   - Attack dimensions: theoretical flaws, experiment design gaps, insufficient novelty, reproducibility
 
-3. **Evidence（证据验证者）**：验证文献声明
-   - 产出：EVIDENCE_CHECK.md
-   - 验证：每条文献引用是否真实、数据是否准确、结论是否被支持
+3. **Evidence**: Verifies literature claims
+   - Output: EVIDENCE_CHECK.md
+   - Validates: whether each citation is real, data is accurate, conclusions are supported
 
-#### 对抗流程
+#### Adversarial Process
 
 ```
-Round 1: Proposer提3个方案 → Reviewer逐个攻击 → 幸存者修订
+Round 1: Proposer presents 3 proposals → Reviewer attacks each → Survivors revise
     ↓
-Round 2: 修订方案再攻击 → 评估GO/REVISE/KILL
+Round 2: Revised proposals attacked again → GO / REVISE / KILL
     ↓
-Round 3+: 如REVISE则继续修订→攻击循环
+Round 3+: If REVISE, continue revise → attack loop
     ↓
-最终: 找到可行方案（GO）或确认方向不可行（KILL）
+Final: Find a viable proposal (GO) or confirm direction is infeasible (KILL)
 ```
 
-#### 决策标准
+#### Decision Criteria
 
-| 决策 | 条件 | 下一步 |
-|------|------|--------|
-| **GO** | 方案通过所有FATAL检查，MAJOR ≤ 3个可修复 | 进入Phase 2 |
-| **REVISE** | 有1-2个FATAL可修复，或MAJOR过多 | 修订后重审 |
-| **KILL** | 存在不可修复的FATAL，或核心假设被推翻 | 换方向重来 |
+| Decision | Condition | Next Step |
+|----------|-----------|-----------|
+| **GO** | Proposal passes all FATAL checks, ≤ 3 fixable MAJORs | Proceed to Phase 2 |
+| **REVISE** | 1-2 fixable FATALs, or too many MAJORs | Revise and re-review |
+| **KILL** | Irreparable FATALs, or core assumptions disproven | Change direction |
 
-### Phase 1c: 最终决策输出
+### Phase 1c: Final Decision Output
 
 ```markdown
 # Research Gap Report
 
-## 推荐方向: [名称]
-- Gap等级: [窄/中窄/中等]
-- 文献验证: [论文数量和趋势]
-- 对抗辩论结果: [GO/REVISE] 轮次: [N]
+## Recommended Direction: [Name]
+- Gap Size: [Narrow / Medium-narrow / Medium]
+- Literature Validation: [Paper count and trend]
+- Adversarial Debate Result: [GO / REVISE] Rounds: [N]
 
-## 候选Gap列表
+## Candidate Gaps
 
-### Gap 1: [名称]
-- 来源论文：[论文名]
-- 当前方法的局限：[具体描述]
-- 改进思路：[具体方案]
-- 跨领域来源：[哪个领域的方法可以迁移]
-- 预期效果：[定量估计]
-- 可行性：[高/中/低]
-- 对抗辩论：[通过/被击溃的原因]
+### Gap 1: [Name]
+- Source Paper: [Paper title]
+- Current Limitation: [Specific description]
+- Improvement Idea: [Concrete approach]
+- Cross-domain Source: [Which domain's method can transfer]
+- Expected Effect: [Quantitative estimate]
+- Feasibility: [High / Medium / Low]
+- Debate Result: [Passed / Defeated — reason]
 ```
 
-#### 结构化输出文件
+#### Structured Output Files
 
-每个Phase 1完成后，生成以下文件：
-- `PROPOSAL_FINAL.md`：详细研究方案
-- `REVIEW_FINAL_PREP.md`：攻击清单和防御策略
-- `EVIDENCE_CHECK.md`：文献验证报告
-- `FINAL_SUMMARY.md`：压缩总结（1页）
+After completing Phase 1, generate:
+- `PROPOSAL_FINAL.md`: Detailed research proposal
+- `REVIEW_FINAL_PREP.md`: Attack checklist and defense strategy
+- `EVIDENCE_CHECK.md`: Literature verification report
+- `FINAL_SUMMARY.md`: Compressed summary (1 page)
 
 ---
 
-## Phase 2: 创新点设计
+## Phase 2: Innovation Design
 
-### 设计原则
+### Design Principles
 
-1. **有理论支撑**：每个创新点必须有明确的数学/物理/统计动机
-2. **可解释性**：能用1-2句话解释为什么有效
-3. **可验证**：有明确的对比实验设计
-4. **不恶化**：单个创新点不能让结果变差
-5. **组合增益**：多个创新点组合有累加效果
+1. **Theoretically grounded**: Each innovation must have a clear mathematical / physical / statistical motivation
+2. **Explainable**: Can be justified in 1-2 sentences for why it works
+3. **Verifiable**: Has a clear comparative experiment design
+4. **Non-degrading**: A single innovation must not worsen results
+5. **Additive**: Multiple innovations should have cumulative effects
 
-### 两种实用选题策略
+### Two Practical Strategies
 
-**借船出海**：找顶会开源论文，框架不动换场景
-- 例：自然图像分类→工业瑕疵检测，结论写"首次应用"
-- 优势：审稿人默认加分
+**Borrow-and-Swap**: Take an open-source top-venue paper, keep the framework, swap the domain
+- Example: Natural image classification → industrial defect detection
+- Advantage: reviewers implicitly credit "first application"
 
-**换芯升级**：针对经典模型换单个核心零件
-- 例：标准卷积→可变形卷积，让模型对不规则目标更敏感
-- 重点写"针对XX痛点提出改进"
+**Core-Upgrade**: Replace a single core component in a classical model
+- Example: Standard convolution → deformable convolution for irregular targets
+- Focus: write "improved for the XX pain point"
 
-### 创新点设计模板
+### Innovation Design Template
 
 ```markdown
-## Innovation N: [名称]
+## Innovation N: [Name]
 
-### 问题动机
-[当前方法在什么情况下失效？为什么？]
+### Problem Motivation
+[Under what conditions does the current method fail? Why?]
 
-### 理论基础
-[来自哪个领域的什么理论？数学公式是什么？]
+### Theoretical Foundation
+[From which domain and theory? What is the mathematical formula?]
 
-### 实现方案
-[具体怎么改？修改哪个模块/函数？]
+### Implementation Plan
+[What exactly to change? Which module/function?]
 
-### 参数设计
-[新增参数？默认值？]
+### Parameter Design
+[New parameters? Default values?]
 
-### 预期效果
-[哪个指标会改善？改善多少？]
+### Expected Effect
+[Which metric improves? By how much?]
 
-### 验证方法
-[对比实验：baseline vs +InnovationN]
+### Validation Method
+[Comparative experiment: baseline vs +InnovationN]
 ```
 
 ---
 
-## Phase 3: Baseline复现
+## Phase 3: Baseline Reproduction
 
-### 复现原则
+### Reproduction Principles
 
-1. **用官方代码**：不用自己写的简化版
-2. **用官方参数**：从论文/GitHub获取
-3. **结果对齐**：和论文报告的数字比较
+1. **Use official code**: Never use a self-written simplified version
+2. **Use official parameters**: Obtain from the paper / GitHub
+3. **Align results**: Compare with numbers reported in the paper
 
-### 复现记录模板
+### Reproduction Report Template
 
 ```markdown
 # Baseline Reproduction Report
 
-## 方法: [方法名]
-- 论文: [论文标题]
-- 代码: [GitHub链接]
-- 数据集: [数据集名称和划分]
-- 硬件: [GPU/CPU型号]
+## Method: [Name]
+- Paper: [Paper title]
+- Code: [GitHub link]
+- Dataset: [Dataset name and split]
+- Hardware: [GPU/CPU model]
 
-### 复现结果
-| 指标 | 论文报告 | 复现结果 | 偏差 | 原因 |
-|------|---------|---------|------|------|
+### Reproduction Results
+| Metric | Reported | Reproduced | Deviation | Reason |
+|--------|----------|------------|-----------|--------|
 | ... | ... | ... | ... | ... |
 
-### 结论
-- [x] 复现成功，结果可作为baseline
-- [ ] 复现有偏差，原因是...
+### Conclusion
+- [x] Reproduction successful, results can serve as baseline
+- [ ] Reproduction has deviation, reason: ...
 ```
 
 ---
 
-## Phase 4: 创新点实现
+## Phase 4: Innovation Implementation
 
-### 实现原则
+### Implementation Principles
 
-1. **最小修改**：只改必要的代码，保持框架不变
-2. **模块化**：通过配置开关，默认OFF
-3. **可复现**：记录所有修改，版本控制
-4. **文档化**：每个修改都有注释说明
+1. **Minimal changes**: Only modify necessary code, keep the framework intact
+2. **Modular**: Toggle via configuration, default OFF
+3. **Reproducible**: Record all modifications, version control
+4. **Documented**: Every modification has explanatory comments
 
-### 实现流程
+### Implementation Flow
 
-1. **备份原版**：`cp -r original/ backup/`
-2. **理解代码**：读关键函数，理解数据流
-3. **定位修改点**：找到需要改的具体函数/行
-4. **实现创新点**：添加新代码
-5. **单元测试**：确认没引入bug
-6. **集成测试**：和原版对比，确认没恶化
+1. **Backup original**: `cp -r original/ backup/`
+2. **Understand code**: Read key functions, understand data flow
+3. **Locate modification points**: Find the specific functions/lines to change
+4. **Implement innovation**: Add new code
+5. **Unit test**: Confirm no bugs introduced
+6. **Integration test**: Compare with original, confirm no regression
 
-### 代码修改记录
+### Code Modification Log
 
 ```markdown
 # Modification Log
 
-## Innovation 1: [名称]
-### 修改文件
-- path/to/file1.py: [修改内容]
-- path/to/file2.py: [修改内容]
+## Innovation 1: [Name]
+### Modified Files
+- path/to/file1.py: [Change description]
+- path/to/file2.py: [Change description]
 
-### 新增参数
-- param_name: [类型] [默认值] [说明]
+### New Parameters
+- param_name: [type] [default] [description]
 
-### 开关方式
-[如何启用/禁用这个创新点]
+### Toggle Method
+[How to enable/disable this innovation]
 ```
 
 ---
 
-## Phase 5: 实验验证
+## Phase 5: Experimental Validation
 
-### 实验设计原则
+### Experiment Design Principles
 
-1. **对比公平**：相同数据、相同划分、相同硬件
-2. **多次运行**：至少3次，报告均值和标准差
-3. **消融实验**：每个创新点单独验证
-4. **跨数据集**：至少在2个数据集上验证
+1. **Fair comparison**: Same data, same split, same hardware
+2. **Multiple runs**: At least 3, report mean and standard deviation
+3. **Ablation study**: Validate each innovation independently
+4. **Cross-dataset**: Validate on at least 2 datasets
 
-### 实验矩阵
+### Experiment Matrix
 
 ```
-| 配置 | Dataset1 | Dataset2 | Dataset3 |
-|------|----------|----------|----------|
-| Baseline | ✓ | ✓ | ✓ |
-| +Innovation1 | ✓ | ✓ | ✓ |
-| +Innovation2 | ✓ | ✓ | ✓ |
-| +Innovation3 | ✓ | ✓ | ✓ |
-| +All | ✓ | ✓ | ✓ |
+| Config     | Dataset1 | Dataset2 | Dataset3 |
+|------------|----------|----------|----------|
+| Baseline   | ✓        | ✓        | ✓        |
+| +Innov. 1  | ✓        | ✓        | ✓        |
+| +Innov. 2  | ✓        | ✓        | ✓        |
+| +Innov. 3  | ✓        | ✓        | ✓        |
+| +All       | ✓        | ✓        | ✓        |
 ```
 
-### 结果记录模板
+### Results Template
 
 ```markdown
 # Experiment Results
 
-## 实验配置
-- 方法: [方法名]
-- 数据集: [数据集列表]
-- 硬件: [配置]
-- 运行次数: [N]
+## Configuration
+- Method: [Method name]
+- Datasets: [Dataset list]
+- Hardware: [Configuration]
+- Runs: [N]
 
-## 结果
-| 配置 | Dataset1 | Dataset2 | Dataset3 |
-|------|----------|----------|----------|
-| Baseline | X.XX±X.XX | X.XX±X.XX | X.XX±X.XX |
-| +Inn1 | X.XX±X.XX | X.XX±X.XX | X.XX±X.XX |
-| +Inn2 | X.XX±X.XX | X.XX±X.XX | X.XX±X.XX |
-| +All | X.XX±X.XX | X.XX±X.XX | X.XX±X.XX |
+## Results
+| Config     | Dataset1    | Dataset2    | Dataset3    |
+|------------|-------------|-------------|-------------|
+| Baseline   | X.XX±X.XX   | X.XX±X.XX   | X.XX±X.XX   |
+| +Innov. 1  | X.XX±X.XX   | X.XX±X.XX   | X.XX±X.XX   |
+| +Innov. 2  | X.XX±X.XX   | X.XX±X.XX   | X.XX±X.XX   |
+| +All       | X.XX±X.XX   | X.XX±X.XX   | X.XX±X.XX   |
 
-## 分析
-- Innovation 1: [有效/无效] [原因]
-- Innovation 2: [有效/无效] [原因]
-- 组合效果: [累加/协同/冲突]
+## Analysis
+- Innovation 1: [Effective / Ineffective] [Reason]
+- Innovation 2: [Effective / Ineffective] [Reason]
+- Combined: [Additive / Synergistic / Conflicting]
 ```
 
-### 成功标准
+### Success Criteria
 
-- **单创新点**：不能比baseline差
-- **组合效果**：有累加改进
-- **跨数据集**：在多个数据集上都有效
-- **改进幅度**：达到目标（如≥10%）
+- **Single innovation**: Must not be worse than baseline
+- **Combined effect**: Shows cumulative improvement
+- **Cross-dataset**: Effective on multiple datasets
+- **Improvement margin**: Meets target (e.g., ≥10%)
 
 ---
 
-## Phase 6: 结果分析 & 迭代
+## Phase 6: Analysis & Iteration
 
-### 分析维度
+### Analysis Dimensions
 
-1. **定量分析**：指标均值、标准差、显著性检验
-2. **定性分析**：可视化结果、案例分析
-3. **消融分析**：每个创新点的独立贡献
-4. **失败分析**：什么情况下创新点失效
+1. **Quantitative**: Metric mean, standard deviation, significance test
+2. **Qualitative**: Visualization, case studies
+3. **Ablation**: Independent contribution of each innovation
+4. **Failure analysis**: Under what conditions does the innovation fail
 
-### 迭代决策
+### Iteration Decision
 
-| 情况 | 决策 | 下一步 |
-|------|------|--------|
-| 创新点有效 | 保留，继续加下一个 | 回到Phase 2 |
-| 创新点无效 | 分析原因，调整或放弃 | 修改后重试或换新方向 |
-| 创新点恶化 | 立即放弃，记录原因 | 换新方向 |
-| 组合冲突 | 分析冲突原因 | 调整组合方式 |
-
----
-
-## Phase 7: 论文撰写
-
-### 论文结构
-
-1. **Introduction**：问题动机、相关工作、我们的贡献
-2. **Related Work**：分组总结，找gap
-3. **Method**：问题定义、创新点详述、理论分析
-4. **Experiments**：数据集、实验设置、结果分析
-5. **Conclusion**：总结、局限性、未来工作
-
-### 写作原则
-
-1. **故事线清晰**：为什么非做不可→怎么做→效果如何
-2. **创新点突出**：每个创新点有明确的动机和验证
-3. **实验严谨**：多次运行、标准差、消融实验
-4. **图表清晰**：关键结果有图有表
-
-### 目标期刊/会议选择
-
-根据研究方向和创新点类型选择：
-- **理论创新**：IEEE TPAMI, IJCV, NeurIPS
-- **应用创新**：IEEE TRO, IROS, ICRA
-- **跨领域**：Nature Machine Intelligence, Science Robotics
+| Situation | Decision | Next Step |
+|-----------|----------|-----------|
+| Innovation effective | Keep, add next one | Back to Phase 2 |
+| Innovation ineffective | Analyze reason, adjust or abandon | Modify and retry, or new direction |
+| Innovation degrades | Abandon immediately, record reason | New direction |
+| Combination conflicts | Analyze conflict reason | Adjust combination |
 
 ---
 
-## 通用规则
+## Phase 7: Paper Writing
 
-### 代码规范
+### Paper Structure
 
-- 保留官方代码原版，修改在副本上
-- 每个修改有注释说明
-- 用版本控制记录变更
+1. **Introduction**: Problem motivation, related work, our contributions
+2. **Related Work**: Grouped summary, identify gaps
+3. **Method**: Problem definition, innovation details, theoretical analysis
+4. **Experiments**: Datasets, setup, result analysis
+5. **Conclusion**: Summary, limitations, future work
 
-### 实验规范
+### Writing Principles
 
-- 必须用官方baseline，不能自己写简化版
-- 多次运行报告均值±标准差
-- 消融实验验证每个创新点
+1. **Clear storyline**: Why it must be done → How we do it → How well it works
+2. **Highlight innovations**: Each innovation has clear motivation and validation
+3. **Rigorous experiments**: Multiple runs, standard deviation, ablation study
+4. **Clear figures and tables**: Key results have both
 
-### 文档规范
+### Target Venue Selection
 
-- 每个Phase有输出文档
-- 记录所有决策和原因
-- 保留中间结果便于回溯
+Based on research direction and innovation type:
+- **Theoretical innovation**: IEEE TPAMI, IJCV, NeurIPS
+- **Applied innovation**: IEEE TRO, IROS, ICRA
+- **Cross-domain**: Nature Machine Intelligence, Science Robotics
 
 ---
 
-## 快速命令模板
+## General Rules
 
-### 文献调研
-```
-帮我搜索[关键词]近3年的顶会论文，总结创新点和局限性
-```
+### Code Standards
 
-### 多Agent对抗Gap发现
-```
-启动3个Agent对抗辩论：Proposer/Reviewer/Evidence，
-研究方向是[方向]，目标期刊是[期刊]，至少3轮对抗
-```
+- Preserve the original official code; make modifications on a copy
+- Every modification has explanatory comments
+- Use version control to track changes
 
-### 文献验证
-```
-用Semantic Scholar API验证[关键词]方向的论文数量，判断Gap大小
-```
+### Experiment Standards
 
-### 创新点设计
-```
-基于[gap描述]，设计一个有理论支撑的创新点，来源领域是[领域名]
-```
+- Must use official baselines, never write simplified versions
+- Multiple runs reported as mean ± standard deviation
+- Ablation experiments validate each innovation
 
-### Baseline复现
-```
-用官方代码复现[方法名]在[数据集]上的结果，官方配置是...
-```
+### Documentation Standards
 
-### 实验验证
+- Each Phase has an output document
+- Record all decisions and reasons
+- Keep intermediate results for traceability
+
+---
+
+## Quick Command Templates
+
+### Literature Survey
 ```
-跑[方法名]的消融实验，对比baseline和每个创新点的独立效果
+Search [keyword] papers from top venues in the last 3 years, summarize innovations and limitations
 ```
 
-### 论文撰写
+### Multi-Agent Adversarial Gap Discovery
 ```
-帮我写[创新点名称]的Method部分，需要包含理论分析
+Launch 3 adversarial agents: Proposer/Reviewer/Evidence,
+research direction is [direction], target journal is [journal], at least 3 rounds
+```
+
+### Literature Validation
+```
+Use Semantic Scholar API to count papers in the [keyword] direction and assess gap size
+```
+
+### Innovation Design
+```
+Based on [gap description], design a theoretically grounded innovation sourced from [domain]
+```
+
+### Baseline Reproduction
+```
+Reproduce [method] on [dataset] using official code, official config is...
+```
+
+### Experimental Validation
+```
+Run ablation study for [method], comparing baseline vs each innovation independently
+```
+
+### Paper Writing
+```
+Write the Method section for [innovation name], including theoretical analysis
 ```
